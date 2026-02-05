@@ -1,0 +1,131 @@
+.checkoutContainer {
+    max-width: 600px;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: hsl(var(--card));
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.input {
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+    font-family: inherit;
+    font-size: 1rem;
+    color: #fff;
+    transition: border-color 0.2s;
+
+    &:focus {
+        outline: none;
+        border-color: hsl(var(--primary));
+        box-shadow: 0 0 0 2px hsla(var(--primary), 0.2);
+    }
+}
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.summary {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: hsl(var(--background));
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.total {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: hsl(var(--primary));
+    border-top: 1px solid hsl(var(--border));
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.submitBtn {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.verificationContainer {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: hsl(var(--card));
+    border-radius: var(--radius-md);
+    border: 1px solid hsl(var(--border));
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.otpInput {
+    letter-spacing: 0.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.successMessage {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.checkmark {
+    width: 80px;
+    height: 80px;
+    background: hsl(var(--success));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 10px 25px hsla(var(--success), 0.4);
+}

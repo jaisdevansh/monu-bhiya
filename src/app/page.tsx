@@ -1,66 +1,49 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { db } from '@/db';
+import { products, categories } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import HomeClient from './HomeClient';
+import { Metadata } from 'next';
 
-export default function Home() {
+export const metadata: Metadata = {
+  title: 'Monu Chai & Food Court | Authentic Taste',
+  description: 'Fresh Chai, crispy Samosas, and delicious snacks served hot. Order online now.',
+};
+
+// Force dynamic because we are fetching from DB
+export const dynamic = 'force-dynamic';
+
+export default async function Home() {
+  // Parallel fetch for categories and products
+  const [allCategories, allProducts] = await Promise.all([
+    db.select().from(categories),
+    db.select({
+      id: products.id,
+      name: products.name,
+      description: products.description,
+      price: products.price,
+      image: products.image,
+      categoryId: products.categoryId,
+      categorySlug: categories.slug,
+      isPopular: products.isPopular,
+      isAvailable: products.isAvailable,
+    })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
+  ]);
+
+  // Format products
+  const formattedProducts = allProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    image: p.image,
+    categorySlug: p.categorySlug || 'others',
+    isPopular: p.isPopular,
+    isAvailable: p.isAvailable,
+  }));
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <HomeClient products={formattedProducts} categories={allCategories} />
   );
 }

@@ -1,0 +1,175 @@
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    padding: 1.25rem 0;
+}
+
+.scrolled {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.navContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.desktopNav {
+    display: none;
+}
+
+.mobileToggle {
+    display: block;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: hsl(var(--foreground));
+    padding: 0.5rem;
+}
+
+/* Desktop Styles */
+@media (min-width: 768px) {
+    .desktopNav {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .mobileToggle {
+        display: none;
+    }
+}
+
+.navLink {
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.navLink:hover {
+    color: hsl(var(--primary));
+}
+
+.shopBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Mobile Menu */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1001;
+}
+
+.mobileMenu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 80%;
+    max-width: 320px;
+    background: hsl(var(--background));
+    z-index: 1002;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.15);
+}
+
+.menuHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.closeBtn {
+    background: hsl(var(--input));
+    border: none;
+    border-radius: 50%;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mobileNav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.mobileFooter {
+    margin-top: auto;
+}
+
+.cartBtn {
+    position: relative;
+    background: transparent;
+    border: none;
+    color: hsl(var(--foreground));
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.cartBtn:hover {
+    color: hsl(var(--primary));
+    transform: scale(1.1);
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: hsl(var(--primary));
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 800;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.mobileCartBtn {
+    display: flex;
+    margin-right: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .mobileCartBtn {
+        display: none;
+    }
+}
