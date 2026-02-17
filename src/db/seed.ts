@@ -1,8 +1,8 @@
-import { db } from './index';
-import { categories, products, orders, orderItems } from './schema';
-import * as dotenv from 'dotenv';
 import { neon } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-http';
+import { categories, products, orders, orderItems } from './schema';
+import * as schema from './schema';
+import * as dotenv from 'dotenv';
 
 // Load env vars for standalone execution
 dotenv.config({ path: '.env.local' });
@@ -12,7 +12,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 const sql = neon(process.env.DATABASE_URL);
-const dbInstance = drizzle(sql);
+const dbInstance = drizzle(sql, { schema });
 
 async function main() {
     console.log('Seeding database...');
