@@ -1,247 +1,206 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Lock, Loader2, ArrowLeft, ShieldCheck } from 'lucide-react';
-import Link from 'next/link';
+import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
+import { loginAdmin } from '@/app/actions/admin-auth';
 import { motion } from 'framer-motion';
+import { Lock, ArrowRight } from 'lucide-react';
+import styles from '../admin.module.css';
 
-export default function AdminLogin() {
-    const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isFocused, setIsFocused] = useState(false);
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <button
+            type="submit"
+            disabled={pending}
+            style={{
+                width: '100%',
+                padding: '1rem',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                border: 'none',
+                color: '#18181b', // Dark text for contrast on orange
+                fontWeight: 700,
+                fontSize: '1rem',
+                cursor: pending ? 'not-allowed' : 'pointer',
+                opacity: pending ? 0.7 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                marginTop: '1rem',
+                transition: 'transform 0.2s'
+            }}
+        >
+            {pending ? 'Verifying...' : (
+                <>
+                    Access Dashboard <ArrowRight size={18} />
+                </>
+            )}
+        </button>
+    );
+}
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-
-        try {
-            const res = await fetch('/api/admin/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ password }),
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                router.push('/admin');
-            } else {
-                setError(data.error || 'Access Denied');
-                // Shake animation trigger could go here
-            }
-        } catch (err) {
-            setError('Something went wrong');
-        } finally {
-            setLoading(false);
-        }
-    };
+export default function AdminLoginPage() {
+    const [state, formAction] = useActionState(loginAdmin, null);
 
     return (
         <div style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: '#0a0a0a',
             position: 'relative',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+            width: '100vw',
             overflow: 'hidden',
-            fontFamily: 'var(--font-geist-sans, sans-serif)'
+            backgroundColor: '#000'
         }}>
-            {/* Ambient Background Glow */}
+            {/* Background Image with Parallax-like fix */}
             <div style={{
                 position: 'absolute',
-                top: '-20%',
-                left: '-10%',
-                width: '600px',
-                height: '600px',
-                background: 'radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(0,0,0,0) 70%)',
-                filter: 'blur(80px)',
-                zIndex: 0,
-                pointerEvents: 'none'
-            }} />
-            <div style={{
-                position: 'absolute',
-                bottom: '-20%',
-                right: '-10%',
-                width: '500px',
-                height: '500px',
-                background: 'radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, rgba(0,0,0,0) 70%)',
-                filter: 'blur(80px)',
-                zIndex: 0,
-                pointerEvents: 'none'
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                backgroundImage: 'url("https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&q=80&w=2074")',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                zIndex: 0
             }} />
 
+            {/* Dark Overlay */}
+            <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                background: 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9))',
+                backdropFilter: 'blur(4px)',
+                zIndex: 1
+            }} />
+
+            {/* Login Card */}
             <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: 'easeOut' }}
+                transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
                 style={{
+                    position: 'relative',
+                    zIndex: 2,
                     width: '100%',
                     maxWidth: '420px',
                     margin: '1rem',
-                    background: 'rgba(24, 24, 27, 0.6)',
+                    padding: '3rem 2rem',
+                    background: 'rgba(24, 24, 27, 0.75)', // Zinc-900 with opacity
                     backdropFilter: 'blur(20px)',
                     border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '24px',
-                    padding: '3rem 2rem',
-                    position: 'relative',
-                    zIndex: 1,
-                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
                 }}
             >
-                {/* Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                    <Link href="/" style={{
-                        color: 'rgba(255,255,255,0.4)',
-                        transition: 'color 0.2s',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        fontSize: '0.9rem'
-                    }}
-                        onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-                        onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
-                    >
-                        <ArrowLeft size={18} /> Back
-                    </Link>
-
-                    <div style={{
-                        width: '40px',
-                        height: '40px',
-                        background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                        borderRadius: '12px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(217, 119, 6, 0.3)'
-                    }}>
-                        <Lock size={20} color="#000" />
-                    </div>
+                {/* Icon */}
+                <div style={{
+                    width: '72px',
+                    height: '72px',
+                    background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.2))',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginBottom: '1.5rem',
+                    color: '#F59E0B',
+                    border: '1px solid rgba(245, 158, 11, 0.3)',
+                    boxShadow: '0 0 20px rgba(245, 158, 11, 0.2)'
+                }}>
+                    <Lock size={32} strokeWidth={2.5} />
                 </div>
 
+                {/* Header */}
                 <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
                     <h1 style={{
-                        fontSize: '2rem',
-                        fontWeight: '700',
                         color: '#fff',
-                        marginBottom: '0.75rem',
+                        fontSize: '2rem',
+                        fontWeight: 800,
+                        marginBottom: '0.5rem',
                         letterSpacing: '-0.02em'
                     }}>
-                        Restricted Access
+                        Admin Portal
                     </h1>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                        Welcome back, Sir. <br /> Please identify yourself.
+                    <p style={{ color: '#a1a1aa', fontSize: '0.95rem' }}>
+                        Enter your secure access key to manage the store.
                     </p>
                 </div>
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    <div style={{ position: 'relative' }}>
-                        <label
-                            htmlFor="admin-pass"
-                            style={{
-                                display: 'block',
-                                color: isFocused || password ? '#F59E0B' : 'rgba(255,255,255,0.4)',
-                                fontSize: '0.75rem',
-                                fontWeight: '600',
-                                textTransform: 'uppercase',
-                                letterSpacing: '0.05em',
-                                marginBottom: '0.5rem',
-                                transition: 'color 0.2s',
-                                marginLeft: '4px'
-                            }}
-                        >
-                            Security Key
+                {/* Form */}
+                <form action={formAction} style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{
+                            color: '#e4e4e7',
+                            fontSize: '0.9rem',
+                            fontWeight: 500,
+                            marginLeft: '0.25rem'
+                        }}>
+                            Access Key
                         </label>
-                        <div style={{ position: 'relative' }}>
-                            <input
-                                id="admin-pass"
-                                type="password"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                onFocus={() => setIsFocused(true)}
-                                onBlur={() => setIsFocused(false)}
-                                placeholder="••••••••••••"
-                                style={{
-                                    width: '100%',
-                                    background: '#000',
-                                    border: `2px solid ${isFocused ? '#F59E0B' : '#27272a'}`,
-                                    borderRadius: '16px',
-                                    padding: '1rem 1.25rem',
-                                    color: '#fff',
-                                    fontSize: '1.1rem',
-                                    outline: 'none',
-                                    transition: 'all 0.2s ease',
-                                    letterSpacing: '0.1em'
-                                }}
-                            />
-                            {password && (
-                                <div style={{
-                                    position: 'absolute',
-                                    right: '16px',
-                                    top: '50%',
-                                    transform: 'translateY(-50%)',
-                                    color: '#10B981'
-                                }}>
-                                    <ShieldCheck size={20} />
-                                </div>
-                            )}
-                        </div>
+                        <input
+                            type="password"
+                            name="password"
+                            required
+                            placeholder="Enter password..."
+                            style={{
+                                width: '100%',
+                                padding: '1rem 1.25rem',
+                                borderRadius: '12px',
+                                background: 'rgba(0, 0, 0, 0.3)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                color: '#fff',
+                                outline: 'none',
+                                fontSize: '1rem',
+                                transition: 'all 0.2s',
+                                fontFamily: 'inherit'
+                            }}
+                            onFocus={(e) => {
+                                e.target.style.borderColor = '#F59E0B';
+                                e.target.style.background = 'rgba(0, 0, 0, 0.5)';
+                            }}
+                            onBlur={(e) => {
+                                e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                                e.target.style.background = 'rgba(0, 0, 0, 0.3)';
+                            }}
+                        />
                     </div>
 
-                    {error && (
+                    {state?.message && (
                         <motion.div
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
                             style={{
-                                padding: '0.75rem',
                                 background: 'rgba(239, 68, 68, 0.1)',
                                 border: '1px solid rgba(239, 68, 68, 0.2)',
-                                borderRadius: '12px',
-                                color: '#ef4444',
+                                color: '#fca5a5',
                                 fontSize: '0.9rem',
-                                textAlign: 'center',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '8px'
+                                padding: '0.75rem',
+                                borderRadius: '8px',
+                                textAlign: 'center'
                             }}
                         >
-                            <span>⚠️</span> {error}
+                            {state.message}
                         </motion.div>
                     )}
 
-                    <motion.button
-                        type="submit"
-                        disabled={loading}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        style={{
-                            width: '100%',
-                            background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
-                            color: '#000',
-                            border: 'none',
-                            borderRadius: '16px',
-                            padding: '1rem',
-                            fontSize: '1rem',
-                            fontWeight: '600',
-                            cursor: loading ? 'wait' : 'pointer',
-                            opacity: loading ? 0.7 : 1,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '0.5rem',
-                            boxShadow: '0 4px 20px rgba(217, 119, 6, 0.25)',
-                            transition: 'opacity 0.2s'
-                        }}
-                    >
-                        {loading ? <Loader2 className="animate-spin" size={20} /> : 'Unlock Access'}
-                    </motion.button>
+                    <SubmitButton />
                 </form>
+
+                {/* Footer link */}
+                <div style={{ marginTop: '2rem' }}>
+                    <a href="/" style={{ color: '#71717a', fontSize: '0.85rem', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={(e) => e.currentTarget.style.color = '#a1a1aa'} onMouseOut={(e) => e.currentTarget.style.color = '#71717a'}>
+                        ← Return to Website
+                    </a>
+                </div>
             </motion.div>
         </div>
     );

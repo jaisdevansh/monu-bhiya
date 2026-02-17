@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
   /* Brand Colors - Chai & Food Court Theme */
   --primary: 25 95% 53%;
@@ -12,65 +14,87 @@
   /* Appetizing Red/Pink */
   --accent-foreground: 0 0% 100%;
 
-  /* Base Colors */
-  --background: 30 20% 97%;
-  /* Warm Cream */
-  --foreground: 20 14% 4%;
-  /* Dark Brown/Black */
+  /* Base Colors - Dark Theme Default */
+  --background: 20 14% 6%;
+  /* Dark Background */
+  --foreground: 30 20% 97%;
+  /* Light Text */
 
-  --card: 0 0% 100%;
-  --card-foreground: 20 14% 4%;
+  --card: 20 14% 8%;
+  /* Slightly lighter dark for cards */
+  --card-foreground: 30 20% 97%;
 
-  --border: 20 6% 90%;
-  --input: 20 6% 90%;
+  --border: 20 6% 20%;
+  --input: 20 6% 20%;
   --ring: 25 95% 53%;
 
   /* Status Colors */
   --success: 142 76% 36%;
   --error: 340 82% 52%;
 
-  /* Dark Mode Overrides */
-  --dark-background: 20 14% 6%;
-  --dark-foreground: 30 20% 97%;
-
   /* Glassmorphism */
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-bg: rgba(20, 10, 5, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --glass-blur: 16px;
 
-  /* Spacing & Radius */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 24px;
+  --color-brand-primary: #C1121F;
+  --color-brand-bg-start: #2A0606;
+  --color-brand-bg-end: #120202;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--dark-background);
-    --foreground: var(--dark-foreground);
-    --card: 20 14% 10%;
-    --card-foreground: 30 20% 97%;
-    --border: 20 14% 20%;
-    --input: 20 14% 20%;
-    --glass-bg: rgba(20, 20, 20, 0.85);
-    --glass-border: rgba(255, 255, 255, 0.1);
+body {
+  background: linear-gradient(180deg, #2A0606 0%, #120202 100%);
+  color: #F5EDED;
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(193, 18, 31, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(193, 18, 31, 0.5);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-}
-
-body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  line-height: 1.5;
 }
 
 a {

@@ -1,0 +1,16 @@
+# Database Connection
+DATABASE_URL="postgres://user:password@host:port/db"
+
+# Cloudinary (Image Optimization & Uploads)
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
+
+# Admin Authentication
+NEXT_PUBLIC_ADMIN_EMAIL="admin@monuchai.com"
+NEXT_PUBLIC_ADMIN_PHONE="9876543210"
+ADMIN_PASSWORD="secure_admin_password_here" 
+
+# Rate Limiting (Upstash Redis)
+UPSTASH_REDIS_REST_URL="https://your-redis-url.upstash.io"
+UPSTASH_REDIS_REST_TOKEN="your_redis_token"

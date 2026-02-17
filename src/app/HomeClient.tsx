@@ -1,13 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useToast } from '@/context/ToastContext';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ReactLenis } from 'lenis/react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Phone, ShoppingBag, Plus, MessageCircle, Star, ArrowRight, X } from 'lucide-react';
+import { Phone, ShoppingBag, Plus, MessageCircle, Star, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import styles from './page.module.css';
+import { ContactFormSchema } from '@/lib/validators'; // Import Zod Schema
 
 // Types
 type Product = {
@@ -27,7 +30,23 @@ type Category = {
     slug: string;
 };
 
-// Carousel Images
+// Cloudinary Optimization Helper
+const getOptimizedUrl = (url: string, width = 800) => {
+    if (!url) return '';
+    if (url.includes('cloudinary.com')) return url; // Already optimized
+
+    // Use Cloudinary fetch for external images if Cloud Name is valid
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    if (cloudName && url.startsWith('http')) {
+        return `https://res.cloudinary.com/${cloudName}/image/fetch/f_auto,q_auto,w_${width}/${url}`;
+    }
+    return url;
+};
+
+// Motion Image Component
+const MotionImage = motion(Image);
+
+// Carousel Images (Unsplash)
 const HERO_IMAGES = [
     'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&q=80&w=1200', // Chai
     'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=1200', // Samosa
@@ -37,6 +56,7 @@ const HERO_IMAGES = [
 
 export default function HomeClient({ products, categories }: { products: Product[], categories: Category[] }) {
     const { addItem } = useCart();
+    const { showToast } = useToast();
 
     // Carousel State
     const [currentImage, setCurrentImage] = useState(0);
@@ -50,6 +70,7 @@ export default function HomeClient({ products, categories }: { products: Product
     // Contact Form State
     const [formState, setFormState] = useState({ name: '', email: '', mobile: '', message: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
     // Client-side mounting for Portal
     const [mounted, setMounted] = useState(false);
@@ -78,10 +99,26 @@ export default function HomeClient({ products, categories }: { products: Product
 
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        setFormErrors({});
+
+        // Client-Side Zod Validation
+        const validation = ContactFormSchema.safeParse(formState);
+
+        if (!validation.success) {
+            const errors: Record<string, string> = {};
+            validation.error.issues.forEach((issue) => {
+                const key = issue.path[0]?.toString() || 'root';
+                errors[key] = issue.message;
+            });
+            setFormErrors(errors);
+            showToast('Please fix the errors in the form', 'error');
+            return;
+        }
+
         setIsSubmitting(true);
         // Simulate sending
         setTimeout(() => {
-            alert(`Thanks ${formState.name}! We'll contact you at ${formState.mobile} shortly.`);
+            showToast(`Thanks ${formState.name}! We'll contact you shortly.`, 'success');
             setIsSubmitting(false);
             setFormState({ name: '', email: '', mobile: '', message: '' });
         }, 1500);
@@ -111,10 +148,13 @@ export default function HomeClient({ products, categories }: { products: Product
                             {/* Owner Badge */}
                             <div className={styles.ownerBadge}>
                                 <div className={styles.ownerAvatar}>
-                                    <img
+                                    <Image
                                         src="https://avataaars.io/?avatarStyle=Circle&topType=ShortHairShortFlat&accessoriesType=Sunglasses&hairColor=Black&facialHairType=BeardLight&clotheType=Hoodie&clotheColor=Red&eyeType=Happy&eyebrowType=Default&mouthType=Smile&skinColor=Light"
-                                        alt="Owner"
+                                        alt="Monu Bhai Owner"
+                                        width={50}
+                                        height={50}
                                         className={styles.ownerImage}
+                                        unoptimized
                                     />
                                 </div>
                                 <div className={styles.ownerName}>
@@ -145,6 +185,7 @@ export default function HomeClient({ products, categories }: { products: Product
                                     className={styles.btnSecondary}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
+                                    onClick={() => showToast('Calling Monu Bhai: +91 98765 43210', 'info')}
                                 >
                                     <Phone size={20} style={{ marginRight: '8px' }} /> Call Now
                                 </motion.a>
@@ -160,15 +201,18 @@ export default function HomeClient({ products, categories }: { products: Product
                         >
                             <div className={styles.imageContainer}>
                                 <AnimatePresence mode="popLayout">
-                                    <motion.img
+                                    <MotionImage
                                         key={currentImage}
-                                        src={HERO_IMAGES[currentImage]}
+                                        src={getOptimizedUrl(HERO_IMAGES[currentImage], 1200)}
                                         alt="Delicious Food"
+                                        width={600}
+                                        height={600}
                                         className={styles.heroMainImage}
                                         initial={{ opacity: 0, scale: 1.1 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.5 }}
+                                        priority
                                     />
                                 </AnimatePresence>
                                 <div className={styles.heroOverlay} style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }} />
@@ -229,7 +273,15 @@ export default function HomeClient({ products, categories }: { products: Product
                                 isAvailable: true
                             })}
                         >
-                            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=200" alt="Samosa" className={styles.offerImage} />
+                            <div className="relative w-full h-[180px]">
+                                <Image
+                                    src={getOptimizedUrl('https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=200', 400)}
+                                    alt="Samosa"
+                                    fill
+                                    className={styles.offerImage}
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
                             <h3 className={styles.offerName}>Samosa + Chutney</h3>
                             <div className={styles.offerPrice}>₹10</div>
                             <button className={styles.orderBtn} onClick={(e) => {
@@ -256,7 +308,15 @@ export default function HomeClient({ products, categories }: { products: Product
                                 isAvailable: true
                             })}
                         >
-                            <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=200" alt="Samosa Sabzi" className={styles.offerImage} />
+                            <div className="relative w-full h-[180px]">
+                                <Image
+                                    src={getOptimizedUrl('https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&q=80&w=200', 400)}
+                                    alt="Samosa Sabzi"
+                                    fill
+                                    className={styles.offerImage}
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
                             <h3 className={styles.offerName}>Samosa + Sabzi</h3>
                             <div className={styles.offerPrice}>₹20</div>
                             <button className={styles.orderBtn} onClick={(e) => {
@@ -283,7 +343,15 @@ export default function HomeClient({ products, categories }: { products: Product
                                 isAvailable: true
                             })}
                         >
-                            <img src="https://images.unsplash.com/photo-1605333534887-19601d4d38c6?auto=format&fit=crop&q=80&w=200" alt="Bread Pakoda" className={styles.offerImage} />
+                            <div className="relative w-full h-[180px]">
+                                <Image
+                                    src={getOptimizedUrl('https://images.unsplash.com/photo-1605333534887-19601d4d38c6?auto=format&fit=crop&q=80&w=200', 400)}
+                                    alt="Bread Pakoda"
+                                    fill
+                                    className={styles.offerImage}
+                                    style={{ objectFit: 'cover' }}
+                                />
+                            </div>
                             <h3 className={styles.offerName}>Bread Pakoda + Sabzi</h3>
                             <div className={styles.offerPrice}>₹20</div>
                             <button className={styles.orderBtn} onClick={(e) => {
@@ -333,7 +401,16 @@ export default function HomeClient({ products, categories }: { products: Product
                                     whileHover={{ y: -5 }}
                                     onClick={() => setSelectedProduct(product)}
                                 >
-                                    <img src={product.image} alt={product.name} className={styles.productImage} loading="lazy" />
+                                    <div style={{ position: 'relative', width: '100%', height: '160px', overflow: 'hidden' }}>
+                                        <Image
+                                            src={getOptimizedUrl(product.image, 400)}
+                                            alt={product.name}
+                                            fill
+                                            className={styles.productImage}
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            style={{ objectFit: 'cover' }}
+                                        />
+                                    </div>
                                     <div className={styles.productInfo}>
                                         <h3 className={styles.productTitle}>{product.name}</h3>
                                         <div className={styles.productRow}>
@@ -383,6 +460,7 @@ export default function HomeClient({ products, categories }: { products: Product
                                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                                     required
                                 />
+                                {formErrors.name && <span className="text-red-500 text-xs mt-1 block">{formErrors.name}</span>}
                             </div>
                             <div className={styles.formGroup}>
                                 <label className={styles.label}>Email Address</label>
@@ -394,6 +472,7 @@ export default function HomeClient({ products, categories }: { products: Product
                                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                                     required
                                 />
+                                {formErrors.email && <span className="text-red-500 text-xs mt-1 block">{formErrors.email}</span>}
                             </div>
                             {formState.email === process.env.NEXT_PUBLIC_ADMIN_EMAIL && formState.mobile === process.env.NEXT_PUBLIC_ADMIN_PHONE && (
                                 <motion.div
@@ -419,6 +498,7 @@ export default function HomeClient({ products, categories }: { products: Product
                                     onChange={(e) => setFormState({ ...formState, mobile: e.target.value })}
                                     required
                                 />
+                                {formErrors.mobile && <span className="text-red-500 text-xs mt-1 block">{formErrors.mobile}</span>}
                             </div>
                             <div className={styles.formGroup}>
                                 <label className={styles.label}>Message (Optional)</label>
@@ -428,6 +508,7 @@ export default function HomeClient({ products, categories }: { products: Product
                                     value={formState.message}
                                     onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                                 />
+                                {formErrors.message && <span className="text-red-500 text-xs mt-1 block">{formErrors.message}</span>}
                             </div>
                             <motion.button
                                 type="submit"
@@ -441,7 +522,11 @@ export default function HomeClient({ products, categories }: { products: Product
                         </form>
 
                         <div className={styles.contactLinks}>
-                            <a href="tel:+919876543210" className={styles.contactLink}>
+                            <a
+                                href="tel:+919876543210"
+                                className={styles.contactLink}
+                                onClick={() => showToast('Calling Monu Bhai: +91 98765 43210', 'info')}
+                            >
                                 <div className={styles.iconCircle}>
                                     <Phone size={24} />
                                 </div>
@@ -475,7 +560,14 @@ export default function HomeClient({ products, categories }: { products: Product
                                     </button>
 
                                     <div className={styles.modalImageContainer}>
-                                        <img src={selectedProduct.image} alt={selectedProduct.name} className={styles.modalImage} />
+                                        <Image
+                                            src={getOptimizedUrl(selectedProduct.image, 800)}
+                                            alt={selectedProduct.name}
+                                            width={600}
+                                            height={400}
+                                            className={styles.modalImage}
+                                            style={{ objectFit: 'cover' }}
+                                        />
                                     </div>
 
                                     <div className={styles.modalDetails}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useToast } from './ToastContext';
 
 export type CartItem = {
     id: string;
@@ -26,6 +27,7 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+    const { showToast } = useToast();
     const [items, setItems] = useState<CartItem[]>([]);
     const [isClient, setIsClient] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -60,6 +62,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
             }
             return [...prev, { ...newItem, quantity: 1 }];
         });
+        showToast(`Added ${newItem.name} to cart`, 'success');
         setIsCartOpen(true); // Auto open
     };
 
