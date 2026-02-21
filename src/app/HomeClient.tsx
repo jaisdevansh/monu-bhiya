@@ -54,7 +54,7 @@ const HERO_IMAGES = [
     'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&q=80&w=1200'  // Tea cup
 ];
 
-export default function HomeClient({ products, categories }: { products: Product[], categories: Category[] }) {
+export default function HomeClient({ products, categories, settings }: { products: Product[], categories: Category[], settings?: any }) {
     const { addItem } = useCart();
     const { showToast } = useToast();
 
@@ -158,7 +158,7 @@ export default function HomeClient({ products, categories }: { products: Product
                                     />
                                 </div>
                                 <div className={styles.ownerName}>
-                                    Monu Bhai <span>Owner & Chef</span>
+                                    {settings?.adminName || 'Monu Bhai'} <span>Owner & Chef</span>
                                 </div>
                             </div>
 
@@ -181,11 +181,11 @@ export default function HomeClient({ products, categories }: { products: Product
                                     <ShoppingBag size={20} /> Shop Now
                                 </motion.a>
                                 <motion.a
-                                    href="tel:+919876543210"
+                                    href={`tel:${settings?.phone || '+919876543210'}`}
                                     className={styles.btnSecondary}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => showToast('Calling Monu Bhai: +91 98765 43210', 'info')}
+                                    onClick={() => showToast(`Calling ${settings?.adminName || 'Monu Bhai'}: ${settings?.phone || '+91 98765 43210'}`, 'info')}
                                 >
                                     <Phone size={20} style={{ marginRight: '8px' }} /> Call Now
                                 </motion.a>
@@ -523,16 +523,16 @@ export default function HomeClient({ products, categories }: { products: Product
 
                         <div className={styles.contactLinks}>
                             <a
-                                href="tel:+919876543210"
+                                href={`tel:${settings?.phone || '+919876543210'}`}
                                 className={styles.contactLink}
-                                onClick={() => showToast('Calling Monu Bhai: +91 98765 43210', 'info')}
+                                onClick={() => showToast(`Calling ${settings?.adminName || 'Monu Bhai'}: ${settings?.phone || '+91 98765 43210'}`, 'info')}
                             >
                                 <div className={styles.iconCircle}>
                                     <Phone size={24} />
                                 </div>
                                 Call Now
                             </a>
-                            <a href="https://wa.me/919876543210?text=Hi!%20I%20want%20to%20place%20an%20order." className={styles.contactLink}>
+                            <a href={`https://wa.me/${(settings?.phone || '919876543210').replace(/\+/g, '')}?text=Hi!%20I%20want%20to%20place%20an%20order.`} className={styles.contactLink}>
                                 <div className={styles.iconCircle}>
                                     <MessageCircle size={24} />
                                 </div>

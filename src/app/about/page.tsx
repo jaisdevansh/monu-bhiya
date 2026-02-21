@@ -5,8 +5,10 @@ export const metadata: Metadata = {
     description: 'Our story and tradition.',
 };
 
+import { getStoreSettings } from '@/app/admin/actions';
 import AboutClient from './AboutClient';
 
-export default function AboutPage() {
-    return <AboutClient />;
+export default async function AboutPage() {
+    const settings = await getStoreSettings();
+    return <AboutClient settings={settings} />;
 }

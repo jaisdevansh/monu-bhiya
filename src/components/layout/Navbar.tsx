@@ -8,7 +8,7 @@ import { Menu, X, ShoppingBag, ShoppingCart } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import styles from './Navbar.module.css';
 
-export default function Navbar() {
+export default function Navbar({ settings }: { settings?: any }) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const pathname = usePathname();
@@ -41,7 +41,13 @@ export default function Navbar() {
                 <div className={`container ${styles.navContainer}`}>
                     {/* Logo */}
                     <Link href="/" className={styles.logo}>
-                        <span className="text-gradient">Monu Chai</span>
+                        {settings?.logoUrl ? (
+                            <img src={settings.logoUrl} alt={settings?.storeName || 'Store Logo'} style={{ height: '40px', objectFit: 'contain' }} />
+                        ) : (
+                            <span className="text-gradient" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                                {settings?.storeName || 'Monu Chai'}
+                            </span>
+                        )}
                     </Link>
 
                     {/* Desktop Nav */}

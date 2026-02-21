@@ -76,7 +76,7 @@ function BackgroundParticles() {
 }
 
 
-export default function AboutClient() {
+export default function AboutClient({ settings }: { settings?: any }) {
     const ref = useRef(null);
     const { scrollYProgress } = useScroll({ target: ref });
     const yHero = useTransform(scrollYProgress, [0, 1], [0, 200]); // Parallax text
@@ -111,7 +111,7 @@ export default function AboutClient() {
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
                         >
-                            We are <span className="text-[#FFC000] font-bold">Monu Chai</span> ☕
+                            We are <span className="text-[#FFC000] font-bold">{settings?.storeName || 'Monu Chai'}</span> ☕
                         </motion.h2>
 
                         <motion.p
@@ -133,7 +133,7 @@ export default function AboutClient() {
                         whileInView={{ opacity: 1 }}
                         className="text-center mb-12"
                     >
-                        <h2 className={styles.heading} style={{ fontSize: '2.5rem' }}>The Monu Difference</h2>
+                        <h2 className={styles.heading} style={{ fontSize: '2.5rem' }}>The {settings?.storeName?.split(' ')[0] || 'Monu'} Difference</h2>
                     </motion.div>
 
                     <div className={styles.cardGrid}>
@@ -165,7 +165,7 @@ export default function AboutClient() {
                         >
                             <Image
                                 src="/images/owner.png"
-                                alt="Monu - Founder"
+                                alt={`${settings?.adminName || 'Monu'} - Founder`}
                                 fill
                                 className="object-cover"
                                 style={{ borderRadius: '50%' }} // optimize fill
@@ -188,7 +188,7 @@ export default function AboutClient() {
                             transition={{ duration: 0.8 }}
                         >
                             <h2 className="text-[#FFC000] text-sm uppercase tracking-widest font-bold mb-2">The Visionary</h2>
-                            <h3 className="text-5xl font-black mb-6 leading-tight">Meet <br /> Monu Bhaiya</h3>
+                            <h3 className="text-5xl font-black mb-6 leading-tight">Meet <br /> {settings?.adminName || 'Monu Bhaiya'}</h3>
                             <p className="text-xl leading-relaxed text-[#F3E9DA] opacity-90 italic">
                                 "I didn't just want to sell tea. I wanted to build a place where every sip feels like home. Ghaziabad needed a spot that served world-class hygiene with street-class flavor."
                             </p>

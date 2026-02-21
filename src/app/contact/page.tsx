@@ -6,6 +6,9 @@ export const metadata = {
     description: 'Get in touch with Monu Chai in Ghaziabad. Call us, chat on WhatsApp, or visit our cafe for the best chai in town.',
 };
 
-export default function ContactPage() {
-    return <ContactClient />;
+import { getStoreSettings } from '@/app/admin/actions';
+
+export default async function ContactPage() {
+    const settings = await getStoreSettings();
+    return <ContactClient settings={settings} />;
 }

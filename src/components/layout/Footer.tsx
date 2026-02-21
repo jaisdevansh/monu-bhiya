@@ -2,16 +2,16 @@ import Link from 'next/link';
 import { Facebook, Instagram, Twitter, MapPin, Phone } from 'lucide-react';
 import styles from './Footer.module.css';
 
-export default function Footer() {
+export default function Footer({ settings }: { settings?: any }) {
     return (
         <footer className={styles.footer}>
             <div className="container">
                 <div className={styles.contentGrid}>
                     {/* Brand */}
                     <div className={styles.brandColumn}>
-                        <h3 className="text-gradient">Monu Chai</h3>
+                        <h3 className="text-gradient">{settings?.storeName || 'Monu Chai'}</h3>
                         <p style={{ opacity: 0.8, maxWidth: '300px' }}>
-                            Serving the best chai and snacks in town since 2010. Taste the tradition with a modern twist.
+                            {settings?.description || 'Serving the best chai and snacks in town since 2010. Taste the tradition with a modern twist.'}
                         </p>
                     </div>
 
@@ -32,18 +32,18 @@ export default function Footer() {
                         <ul className={styles.contactList}>
                             <li className={styles.contactItem}>
                                 <MapPin className={styles.icon} size={20} />
-                                <span>123 Chai Street, Food Court Area,<br />City Center, India</span>
+                                <span style={{ whiteSpace: 'pre-line' }}>{settings?.address || '123 Chai Street, Food Court Area,\nCity Center, India'}</span>
                             </li>
                             <li className={styles.contactItem}>
                                 <Phone className={styles.icon} size={20} />
-                                <span>+91 98765 43210</span>
+                                <span>{settings?.phone || '+91 98765 43210'}</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
                 <div className={styles.bottomBar}>
-                    <p>© {new Date().getFullYear()} Monu Chai & Food Court. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} {settings?.storeName || 'Monu Chai'} & Food Court. All rights reserved.</p>
                     <div className={styles.socialLinks}>
                         <Link href="#" aria-label="Instagram"><Instagram size={20} /></Link>
                         <Link href="#" aria-label="Facebook"><Facebook size={20} /></Link>

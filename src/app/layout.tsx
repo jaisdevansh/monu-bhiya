@@ -5,6 +5,7 @@ import { ToastProvider } from '@/context/ToastContext';
 import ClientLayout from '@/components/layout/ClientLayout';
 import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
 import './globals.css';
+import { getStoreSettings } from '@/app/admin/actions';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -42,16 +43,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getStoreSettings();
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Restaurant",
-    "name": "Highway Chai & Chinese Point Ghaziabad",
-    "image": `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_1200/shop`,
+    "name": settings?.storeName || "Highway Chai & Chinese Point Ghaziabad",
+    "image": settings?.logoUrl || `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_1200/shop`,
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Ghaziabad",
@@ -65,7 +68,7 @@ export default function RootLayout({
       "longitude": "77.4538"
     },
     "url": "https://monuchai.com",
-    "telephone": "+919876543210",
+    "telephone": settings?.phone || "+919876543210",
     "servesCuisine": "Indian, Chinese, Street Food",
     "priceRange": "₹"
   };
@@ -82,7 +85,7 @@ export default function RootLayout({
         <SmoothScrollProvider>
           <ToastProvider>
             <CartProvider>
-              <ClientLayout>
+              <ClientLayout settings={settings}>
                 {children}
               </ClientLayout>
             </CartProvider>

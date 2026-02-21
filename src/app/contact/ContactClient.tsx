@@ -23,7 +23,7 @@ function TiltCard({ children, className = '' }: { children: React.ReactNode, cla
     );
 }
 
-export default function ContactClient() {
+export default function ContactClient({ settings }: { settings?: any }) {
     const [isOpen, setIsOpen] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', mobile: '', address: '', message: '' });
@@ -77,13 +77,13 @@ export default function ContactClient() {
                             <TiltCard>
                                 <div className={styles.iconWrapper}><Phone size={24} /></div>
                                 <h3 className={styles.infoTitle} style={{ fontSize: '1rem', justifyContent: 'center' }}>Call Us</h3>
-                                <a href="tel:+919876543210" className={styles.actionBtn}>Call Now</a>
+                                <a href={`tel:${settings?.phone || '+919876543210'}`} className={styles.actionBtn}>Call Now</a>
                             </TiltCard>
 
                             <TiltCard>
                                 <div className={styles.iconWrapper} style={{ color: '#4ade80' }}><MessageCircle size={24} /></div>
                                 <h3 className={styles.infoTitle} style={{ fontSize: '1rem', justifyContent: 'center' }}>WhatsApp</h3>
-                                <a href="https://wa.me/919876543210" className={styles.actionBtn} style={{ background: '#25D366', color: '#fff' }}>Chat</a>
+                                <a href={`https://wa.me/${(settings?.phone || '919876543210').replace(/\+/g, '')}`} className={styles.actionBtn} style={{ background: '#25D366', color: '#fff' }}>Chat</a>
                             </TiltCard>
                         </div>
 
@@ -96,7 +96,7 @@ export default function ContactClient() {
                         >
                             <h3 className={styles.infoTitle}><MapPin size={20} /> Visit Us</h3>
                             <p className={styles.subText} style={{ fontSize: '0.95rem' }}>
-                                Shop No. 123, Raj Nagar Extension,<br />Ghaziabad, UP - 201017
+                                <span style={{ whiteSpace: 'pre-line' }}>{settings?.address || 'Shop No. 123, Raj Nagar Extension,\nGhaziabad, UP - 201017'}</span>
                             </p>
                             <p style={{ marginTop: '0.4rem', color: '#FFD54F', fontSize: '0.85rem' }}>Near City Park</p>
                         </motion.div>
@@ -231,12 +231,12 @@ export default function ContactClient() {
                 >
                     <div className={styles.mapContainer}>
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14002.59376918868!2d77.42068465!3d28.6702008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cf1a201dbab6b%3A0xe549557223067784!2sRaj%20Nagar%20Extension%2C%20Ghaziabad%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                            src={settings?.googleMapsLink || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14002.59376918868!2d77.42068465!3d28.6702008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cf1a201dbab6b%3A0xe549557223067784!2sRaj%20Nagar%20Extension%2C%20Ghaziabad%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"}
                             className={styles.mapFrame}
                             allowFullScreen
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            title="Monu Chai Location"
+                            title={`${settings?.storeName || 'Monu Chai'} Location`}
                         ></iframe>
                     </div>
                 </motion.div>

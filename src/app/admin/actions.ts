@@ -3,7 +3,7 @@
 import { db } from '@/db';
 import { orders, products, categories, storeSettings } from '@/db/schema';
 import { eq, desc } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import cloudinary from '@/lib/cloudinary';
 import { ProductSchema, CategorySchema } from '@/lib/validators';
 import { z } from 'zod';
@@ -216,7 +216,12 @@ export async function updateStoreSettings(data: any) {
             await db.insert(storeSettings).values(updateData);
         }
 
-        revalidatePath('/admin');
+        // @ts-ignore
+        revalidatePath('/admin', 'page');
+        // @ts-ignore
+        revalidatePath('/', 'page'); // page is default but helps TS
+        // @ts-ignore
+        revalidateTag('store-settings-tag');
         return { success: true };
     } catch (error) {
         console.error('Failed to update store settings:', error);
@@ -244,29 +249,37 @@ export async function getProducts() {
     }
 }
 
-export async function getStoreSettings() {
-    try {
-        const settings = await db.select().from(storeSettings).limit(1);
-        if (settings.length === 0) {
-            const defaultSettings = await db.insert(storeSettings).values({
-                storeName: 'Monu Chai',
-                timings: {
-                    monday: { open: '09:00', close: '22:00', isClosed: false },
-                    tuesday: { open: '09:00', close: '22:00', isClosed: false },
-                    wednesday: { open: '09:00', close: '22:00', isClosed: false },
-                    thursday: { open: '09:00', close: '22:00', isClosed: false },
-                    friday: { open: '09:00', close: '22:00', isClosed: false },
-                    saturday: { open: '09:00', close: '23:00', isClosed: false },
-                    sunday: { open: '09:00', close: '23:00', isClosed: false },
-                }
-            }).returning();
-            return defaultSettings[0];
+const getStoreSettingsCached = unstable_cache(
+    async () => {
+        try {
+            const settings = await db.select().from(storeSettings).limit(1);
+            if (settings.length === 0) {
+                const defaultSettings = await db.insert(storeSettings).values({
+                    storeName: 'Monu Chai',
+                    timings: {
+                        monday: { open: '09:00', close: '22:00', isClosed: false },
+                        tuesday: { open: '09:00', close: '22:00', isClosed: false },
+                        wednesday: { open: '09:00', close: '22:00', isClosed: false },
+                        thursday: { open: '09:00', close: '22:00', isClosed: false },
+                        friday: { open: '09:00', close: '22:00', isClosed: false },
+                        saturday: { open: '09:00', close: '23:00', isClosed: false },
+                        sunday: { open: '09:00', close: '23:00', isClosed: false },
+                    }
+                }).returning();
+                return defaultSettings[0];
+            }
+            return settings[0];
+        } catch (error) {
+            console.error('Failed to fetch store settings:', error);
+            return null;
         }
-        return settings[0];
-    } catch (error) {
-        console.error('Failed to fetch store settings:', error);
-        return null;
-    }
+    },
+    ['store-settings-cache-key'],
+    { tags: ['store-settings-tag'] }
+);
+
+export async function getStoreSettings() {
+    return await getStoreSettingsCached();
 }
 
 // --- USER PROTECTED ACTIONS ---

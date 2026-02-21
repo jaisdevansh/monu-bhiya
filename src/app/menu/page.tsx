@@ -3,6 +3,7 @@ import { products, categories } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import MenuClient from './MenuClient';
 import { Metadata } from 'next';
+import { getStoreSettings } from '@/app/admin/actions';
 
 export const metadata: Metadata = {
     title: 'Menu | Monu Chai',
@@ -13,8 +14,8 @@ export const metadata: Metadata = {
 export const dynamic = 'force-dynamic';
 
 export default async function MenuPage() {
-    // Parallel fetch for categories and products
-    const [allCategories, allProducts] = await Promise.all([
+    // Parallel fetch for categories, products, and settings
+    const [allCategories, allProducts, settings] = await Promise.all([
         db.select().from(categories),
         db.select({
             id: products.id,
@@ -26,7 +27,8 @@ export default async function MenuPage() {
             categorySlug: categories.slug,
         })
             .from(products)
-            .leftJoin(categories, eq(products.categoryId, categories.id))
+            .leftJoin(categories, eq(products.categoryId, categories.id)),
+        getStoreSettings()
     ]);
 
     // Map result to cleaner objects if needed, but the join above gives us what we need
@@ -40,6 +42,6 @@ export default async function MenuPage() {
     }));
 
     return (
-        <MenuClient initialProducts={formattedProducts} categories={allCategories} />
+        <MenuClient initialProducts={formattedProducts} categories={allCategories} settings={settings} />
     );
 }

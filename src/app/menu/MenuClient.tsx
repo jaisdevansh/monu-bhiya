@@ -26,10 +26,12 @@ type Product = {
 
 export default function MenuClient({
     initialProducts,
-    categories
+    categories,
+    settings
 }: {
     initialProducts: Product[],
-    categories: Category[]
+    categories: Category[],
+    settings?: any
 }) {
     const [activeCategory, setActiveCategory] = useState('all');
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -57,7 +59,7 @@ export default function MenuClient({
                     <h1 className={styles.title}>Our <span style={{ color: '#fff' }}>Menu</span></h1>
                     <p className={styles.subtitle}>
                         Handcrafted with love, served with tradition. <br />
-                        Experience the authentic taste of Monu Chai.
+                        Experience the authentic taste of {settings?.storeName || 'Monu Chai'}.
                     </p>
                 </motion.div>
 

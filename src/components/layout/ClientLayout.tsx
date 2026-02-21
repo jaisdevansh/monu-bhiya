@@ -5,7 +5,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import CartSheet from '../cart/CartSheet';
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function ClientLayout({ children, settings }: { children: React.ReactNode, settings: any }) {
     const pathname = usePathname();
     const isAdmin = pathname?.startsWith('/admin');
 
@@ -15,12 +15,12 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
 
     return (
         <>
-            <Navbar />
+            <Navbar settings={settings} />
             <CartSheet />
             <main style={{ minHeight: '100vh', paddingTop: '80px' }}>
                 {children}
             </main>
-            <Footer />
+            <Footer settings={settings} />
         </>
     );
 }

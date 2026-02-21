@@ -3,6 +3,7 @@ import { products, categories } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import HomeClient from './HomeClient';
 import { Metadata } from 'next';
+import { getStoreSettings } from '@/app/admin/actions';
 
 export const metadata: Metadata = {
   title: 'Monu Chai & Food Court | Authentic Taste',
@@ -14,8 +15,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   try {
-    // Parallel fetch for categories and products
-    const [allCategories, allProducts] = await Promise.all([
+    // Parallel fetch for categories, products, and settings
+    const [allCategories, allProducts, settings] = await Promise.all([
       db.select().from(categories),
       db.select({
         id: products.id,
@@ -29,7 +30,8 @@ export default async function Home() {
         isAvailable: products.isAvailable,
       })
         .from(products)
-        .leftJoin(categories, eq(products.categoryId, categories.id))
+        .leftJoin(categories, eq(products.categoryId, categories.id)),
+      getStoreSettings()
     ]);
 
     // Format products
@@ -45,7 +47,7 @@ export default async function Home() {
     }));
 
     return (
-      <HomeClient products={formattedProducts} categories={allCategories} />
+      <HomeClient products={formattedProducts} categories={allCategories} settings={settings} />
     );
   } catch (error: any) {
     console.error('Home Page Data Fetch Error:', error);
