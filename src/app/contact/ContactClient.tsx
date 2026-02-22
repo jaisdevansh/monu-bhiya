@@ -96,9 +96,9 @@ export default function ContactClient({ settings }: { settings?: any }) {
                         >
                             <h3 className={styles.infoTitle}><MapPin size={20} /> Visit Us</h3>
                             <p className={styles.subText} style={{ fontSize: '0.95rem' }}>
-                                <span style={{ whiteSpace: 'pre-line' }}>{settings?.address || 'Shop No. 123, Raj Nagar Extension,\nGhaziabad, UP - 201017'}</span>
+                                <span style={{ whiteSpace: 'pre-line' }}>{settings?.address || 'Opposite Wave City,\nNear Jasmine Grove, Avantika Extension,\nGhaziabad, UP - 201002'}</span>
                             </p>
-                            <p style={{ marginTop: '0.4rem', color: '#FFD54F', fontSize: '0.85rem' }}>Near City Park</p>
+                            <p style={{ marginTop: '0.4rem', color: '#FFD54F', fontSize: '0.85rem' }}>Drive-in Available</p>
                         </motion.div>
 
                         <motion.div
@@ -231,7 +231,7 @@ export default function ContactClient({ settings }: { settings?: any }) {
                 >
                     <div className={styles.mapContainer}>
                         <iframe
-                            src={settings?.googleMapsLink || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14002.59376918868!2d77.42068465!3d28.6702008!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cf1a201dbab6b%3A0xe549557223067784!2sRaj%20Nagar%20Extension%2C%20Ghaziabad%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"}
+                            src={settings?.googleMapsLink || "https://maps.google.com/maps?q=28.6689545,77.4854107&t=&z=15&ie=UTF8&iwloc=&output=embed"}
                             className={styles.mapFrame}
                             allowFullScreen
                             loading="lazy"

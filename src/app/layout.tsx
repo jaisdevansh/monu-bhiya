@@ -31,8 +31,8 @@ export const metadata: Metadata = {
   other: {
     'geo.region': 'IN-UP',
     'geo.placename': 'Ghaziabad',
-    'geo.position': '28.6692;77.4538',
-    'ICBM': '28.6692, 77.4538',
+    'geo.position': '28.6689545;77.4854107',
+    'ICBM': '28.6689545, 77.4854107',
   },
   openGraph: {
     title: 'Best Tea & Snacks Shop on NH-24 Ghaziabad',
@@ -65,10 +65,10 @@ export default async function RootLayout({
         "image": "https://monuchai.com/tea-shop-nh24-ghaziabad.jpg",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": settings?.address || "Exact Location on NH-24",
+          "streetAddress": settings?.address || "Opposite Wave City, Near Jasmine Grove, Avantika Extension",
           "addressLocality": "Ghaziabad",
           "addressRegion": "Uttar Pradesh",
-          "postalCode": "201001",
+          "postalCode": "201002",
           "addressCountry": "IN"
         },
         "telephone": settings?.phone || "+918888888888",
