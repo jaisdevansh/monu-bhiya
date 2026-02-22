@@ -2,12 +2,12 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle2, ArrowRight, Utensils, Clock, Heart, DollarSign } from 'lucide-react';
 import styles from './about.module.css';
-import { ReactLenis } from 'lenis/react';
+
 
 // 3D Tilt Card Component
 function TiltCard({ children, index }: { children: React.ReactNode, index: number }) {
@@ -78,11 +78,8 @@ function BackgroundParticles() {
 
 export default function AboutClient({ settings }: { settings?: any }) {
     const ref = useRef(null);
-    const { scrollYProgress } = useScroll({ target: ref });
-    const yHero = useTransform(scrollYProgress, [0, 1], [0, 200]); // Parallax text
-
     return (
-        <ReactLenis root>
+        <>
             <div className={styles.pageContainer} ref={ref}>
                 {/* Ambient Background Glows */}
                 <div className={styles.floatingBlur} style={{ top: '-10%', left: '-10%', width: '600px', height: '600px', background: '#FF6F00' }} />
@@ -91,7 +88,7 @@ export default function AboutClient({ settings }: { settings?: any }) {
 
                 {/* 1. HERO SECTION */}
                 <section className={styles.heroSection}>
-                    <motion.div style={{ y: yHero }} className="relative z-10">
+                    <motion.div className="relative z-10">
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -231,6 +228,6 @@ export default function AboutClient({ settings }: { settings?: any }) {
                     </div>
                 </section>
             </div>
-        </ReactLenis>
+        </>
     );
 }

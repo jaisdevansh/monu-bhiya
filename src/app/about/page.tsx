@@ -5,6 +5,8 @@ export const metadata: Metadata = {
     description: 'Our story and tradition.',
 };
 
+export const revalidate = 60;
+
 import { getStoreSettings } from '@/app/admin/actions';
 import AboutClient from './AboutClient';
 

@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   description: 'Fresh Chai, crispy Samosas, and delicious snacks served hot. Order online now.',
 };
 
-// Force dynamic because we are fetching from DB
-export const dynamic = 'force-dynamic';
+// ISR Cache: Revalidate every 60 seconds to ensure fresh data without compromising TTFB
+export const revalidate = 60;
 
 export default async function Home() {
   try {

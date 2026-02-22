@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { useToast } from '@/context/ToastContext';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ReactLenis } from 'lenis/react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Phone, ShoppingBag, Plus, MessageCircle, Star, X } from 'lucide-react';
@@ -63,6 +62,7 @@ export default function HomeClient({ products, categories, settings }: { product
 
     // Filter State
     const [activeTab, setActiveTab] = useState('all');
+    const [isPending, startTransition] = useTransition();
 
     // Modal State
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -125,7 +125,7 @@ export default function HomeClient({ products, categories, settings }: { product
     };
 
     return (
-        <ReactLenis root>
+        <>
             <div className={styles.container}>
                 {/* Animation Layer */}
                 <div className={styles.animatedBackground}>
@@ -141,7 +141,7 @@ export default function HomeClient({ products, categories, settings }: { product
                         {/* Text Side */}
                         <motion.div
                             className={styles.heroText}
-                            initial={{ opacity: 0, x: -50 }}
+                            initial={false}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 0.8 }}
                         >
@@ -163,12 +163,12 @@ export default function HomeClient({ products, categories, settings }: { product
                             </div>
 
                             <h1 className={styles.heroTitle}>
-                                Fresh Chai & <br />
-                                <span className={styles.highlight}>Snacks</span> Served Hot
+                                Best Tea & Snacks Shop on <br />
+                                <span className={styles.highlight}>NH-24 in Ghaziabad</span>
                             </h1>
 
                             <p className={styles.heroSubtext}>
-                                Authentic taste delivered to your desk. Experience the magic of spices and fresh ingredients.
+                                Fresh Kadak Chai Near Delhi Meerut Expressway. Your perfect highway breakfast and evening snacks stop.
                             </p>
 
                             <div className={styles.heroButtons}>
@@ -195,9 +195,9 @@ export default function HomeClient({ products, categories, settings }: { product
                         {/* Visual Side */}
                         <motion.div
                             className={styles.heroVisual}
-                            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+                            initial={false}
                             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
+                            transition={{ duration: 0.8 }}
                         >
                             <div className={styles.imageContainer}>
                                 <AnimatePresence mode="popLayout">
@@ -208,11 +208,12 @@ export default function HomeClient({ products, categories, settings }: { product
                                         width={600}
                                         height={600}
                                         className={styles.heroMainImage}
-                                        initial={{ opacity: 0, scale: 1.1 }}
+                                        initial={currentImage === 0 ? false : { opacity: 0, scale: 1.1 }}
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0 }}
                                         transition={{ duration: 0.5 }}
-                                        priority
+                                        priority={currentImage === 0}
+                                        fetchPriority={currentImage === 0 ? "high" : "auto"}
                                     />
                                 </AnimatePresence>
                                 <div className={styles.heroOverlay} style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.6), transparent)' }} />
@@ -251,7 +252,7 @@ export default function HomeClient({ products, categories, settings }: { product
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                     >
-                        Today's Special ⭐
+                        Why We're the Most Loved Tea Shop on NH-24 ⭐
                     </motion.h2>
 
                     <div className={styles.specialsGrid}>
@@ -370,7 +371,7 @@ export default function HomeClient({ products, categories, settings }: { product
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                     >
-                        Our Menu
+                        Kadak Masala Chai & Highway Snacks Menu
                     </motion.h2>
 
                     {/* Filter Tabs */}
@@ -379,7 +380,8 @@ export default function HomeClient({ products, categories, settings }: { product
                             <button
                                 key={cat.id}
                                 className={`${styles.tab} ${activeTab === cat.slug ? styles.activeTab : ''}`}
-                                onClick={() => setActiveTab(cat.slug)}
+                                onClick={() => startTransition(() => setActiveTab(cat.slug))}
+                                disabled={isPending}
                             >
                                 {cat.name}
                             </button>
@@ -606,6 +608,6 @@ export default function HomeClient({ products, categories, settings }: { product
                     document.body
                 )}
             </div>
-        </ReactLenis>
+        </>
     );
 }

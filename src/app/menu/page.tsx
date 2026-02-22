@@ -10,8 +10,8 @@ export const metadata: Metadata = {
     description: 'Explore our delicious menu.',
 };
 
-// Force dynamic because we are fetching from DB (or use revalidate)
-export const dynamic = 'force-dynamic';
+// ISR Cache for faster TTFB
+export const revalidate = 60;
 
 export default async function MenuPage() {
     // Parallel fetch for categories, products, and settings

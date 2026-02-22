@@ -7,39 +7,45 @@ import SmoothScrollProvider from '@/components/providers/SmoothScrollProvider';
 import './globals.css';
 import { getStoreSettings } from '@/app/admin/actions';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
-  title: 'Highway Chai & Chinese Point Ghaziabad | Best Chai on NH24',
-  description: 'Best chai, samosa and Chinese food shop in Ghaziabad highway NH24. Fresh snacks, premium chai, and combos delivered fast.',
+  title: 'Best Tea & Snacks Shop on NH-24 Ghaziabad | Fresh Chai',
+  description: 'Looking for the best tea shop on NH-24 in Ghaziabad? Visit us for fresh kadak chai, samosa, snacks & quick highway refreshments. Easy parking & fast service.',
   keywords: [
-    'chai in Ghaziabad',
-    'chai near NH24',
-    'best samosa Ghaziabad',
-    'Chinese food Ghaziabad highway',
-    'tea stall near me',
-    'highway chai',
-    'food near nh24'
+    'best tea shop on NH-24 Ghaziabad',
+    'chai near me Ghaziabad',
+    'highway tea shop NH-24',
+    'snacks near Delhi Meerut Expressway',
+    'tea stall near NH-24',
+    'road trip tea stop Ghaziabad',
+    'breakfast stop NH-24',
+    'samosa near Ghaziabad highway',
+    'family tea stop on NH-24',
+    'evening chai Ghaziabad'
   ],
+  robots: 'index, follow',
+  alternates: {
+    canonical: 'https://monuchai.com',
+  },
+  other: {
+    'geo.region': 'IN-UP',
+    'geo.placename': 'Ghaziabad',
+    'geo.position': '28.6692;77.4538',
+    'ICBM': '28.6692, 77.4538',
+  },
   openGraph: {
-    title: 'Highway Chai & Chinese Point Ghaziabad',
-    description: 'Best chai and snacks on NH24 Highway Ghaziabad.',
-    images: [
-      {
-        url: `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_1200/shop`,
-        width: 1200,
-        height: 630,
-        alt: 'Highway Chai Shop Front',
-      },
-    ],
-    locale: 'en_IN',
+    title: 'Best Tea & Snacks Shop on NH-24 Ghaziabad',
+    description: 'Fresh chai, samosa & snacks on NH-24 Ghaziabad. Perfect highway tea stop.',
     type: 'website',
+    url: 'https://monuchai.com',
+    images: ['https://monuchai.com/tea-shop-nh24-ghaziabad.jpg'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Highway Chai & Chinese Point Ghaziabad',
-    description: 'Best chai and snacks on NH24 Highway Ghaziabad.',
-    images: [`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_1200/shop`],
+    title: 'Best Tea Shop on NH-24 Ghaziabad',
+    description: 'Highway chai & snacks stop on Delhi Meerut Expressway.',
+    images: ['https://monuchai.com/tea-shop-nh24-ghaziabad.jpg'],
   },
 };
 
@@ -52,25 +58,64 @@ export default async function RootLayout({
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "Restaurant",
-    "name": settings?.storeName || "Highway Chai & Chinese Point Ghaziabad",
-    "image": settings?.logoUrl || `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto,w_1200/shop`,
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Ghaziabad",
-      "addressRegion": "UP",
-      "addressCountry": "India",
-      "streetAddress": "NH24 Highway"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": "28.6692",
-      "longitude": "77.4538"
-    },
-    "url": "https://monuchai.com",
-    "telephone": settings?.phone || "+919876543210",
-    "servesCuisine": "Indian, Chinese, Street Food",
-    "priceRange": "₹"
+    "@graph": [
+      {
+        "@type": "LocalBusiness",
+        "name": settings?.storeName || "Monu Chai",
+        "image": "https://monuchai.com/tea-shop-nh24-ghaziabad.jpg",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": settings?.address || "Exact Location on NH-24",
+          "addressLocality": "Ghaziabad",
+          "addressRegion": "Uttar Pradesh",
+          "postalCode": "201001",
+          "addressCountry": "IN"
+        },
+        "telephone": settings?.phone || "+918888888888",
+        "openingHours": "Mo-Su 06:00-23:00",
+        "priceRange": "₹",
+        "servesCuisine": "Tea, Snacks",
+        "areaServed": "Ghaziabad",
+        "url": "https://monuchai.com"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Where is the best tea shop on NH-24 in Ghaziabad?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Monu Chai is located directly on NH-24 in Ghaziabad, serving fresh kadak chai and hot snacks daily for highway travelers and local residents."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a tea stall open near Delhi Meerut Expressway?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, our shop is conveniently located near the Delhi Meerut Expressway providing quick and fresh refreshments like tea and samosas."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you provide parking for highway travelers?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Absolutely! We offer easy and ample parking space right in front of the tea shop so you can comfortably stop, rest, and enjoy your meal."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is your tea shop open late night on NH-24?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, we are open until 11:00 PM (23:00) every day of the week to serve late-night cravings for tea and snacks to all highway drivers and families."
+            }
+          }
+        ]
+      }
+    ]
   };
 
   return (

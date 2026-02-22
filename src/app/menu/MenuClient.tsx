@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Flame, X } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import styles from './page.module.css';
-import { ReactLenis } from 'lenis/react';
+
 
 // Types definition matching the DB schema roughly
 type Category = {
@@ -34,6 +34,7 @@ export default function MenuClient({
     settings?: any
 }) {
     const [activeCategory, setActiveCategory] = useState('all');
+    const [isPending, startTransition] = useTransition();
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const [mounted, setMounted] = useState(false);
     const { addItem } = useCart();
@@ -47,7 +48,7 @@ export default function MenuClient({
         : initialProducts.filter(p => p.categorySlug === activeCategory);
 
     return (
-        <ReactLenis root>
+        <>
             <div className={styles.menuContainer}>
                 {/* Hero Section */}
                 <motion.div
@@ -66,7 +67,8 @@ export default function MenuClient({
                 {/* Category Tabs */}
                 <div className={styles.tabs}>
                     <button
-                        onClick={() => setActiveCategory('all')}
+                        onClick={() => startTransition(() => setActiveCategory('all'))}
+                        disabled={isPending}
                         className={`${styles.tab} ${activeCategory === 'all' ? styles.activeTab : ''}`}
                     >
                         All
@@ -74,7 +76,8 @@ export default function MenuClient({
                     {categories.map((cat) => (
                         <button
                             key={cat.id}
-                            onClick={() => setActiveCategory(cat.slug)}
+                            onClick={() => startTransition(() => setActiveCategory(cat.slug))}
+                            disabled={isPending}
                             className={`${styles.tab} ${activeCategory === cat.slug ? styles.activeTab : ''}`}
                         >
                             {cat.name}
@@ -198,6 +201,6 @@ export default function MenuClient({
                     document.body
                 )}
             </div>
-        </ReactLenis>
+        </>
     );
 }

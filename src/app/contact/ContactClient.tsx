@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import { Phone, MessageCircle, MapPin, Clock, Send, ShoppingBag, Instagram, Facebook, Twitter } from 'lucide-react';
-import { ReactLenis } from 'lenis/react';
+
 import styles from './contact.module.css';
 
 // 3D Tilt Card (Simplified)
@@ -52,7 +52,7 @@ export default function ContactClient({ settings }: { settings?: any }) {
     };
 
     return (
-        <ReactLenis root>
+        <>
             <div className={styles.pageContainer} ref={ref}>
 
                 {/* Hero Title */}
@@ -283,6 +283,6 @@ export default function ContactClient({ settings }: { settings?: any }) {
                     )}
                 </AnimatePresence>
             </div>
-        </ReactLenis >
+        </>
     );
 }
