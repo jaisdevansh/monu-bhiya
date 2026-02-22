@@ -24,6 +24,8 @@ function TiltCard({ children, className = '' }: { children: React.ReactNode, cla
 }
 
 export default function ContactClient({ settings }: { settings?: any }) {
+
+
     const [isOpen, setIsOpen] = useState(false);
     const [showToast, setShowToast] = useState(false);
     const [formData, setFormData] = useState({ name: '', email: '', mobile: '', address: '', message: '' });
@@ -228,17 +230,35 @@ export default function ContactClient({ settings }: { settings?: any }) {
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
                     viewport={{ once: true }}
+                    style={{ textAlign: 'center' }}
                 >
-                    <div className={styles.mapContainer}>
-                        <iframe
-                            src={settings?.googleMapsLink || "https://maps.google.com/maps?q=28.6689545,77.4854107&t=&z=15&ie=UTF8&iwloc=&output=embed"}
-                            className={styles.mapFrame}
-                            allowFullScreen
-                            loading="lazy"
-                            referrerPolicy="no-referrer-when-downgrade"
-                            title={`${settings?.storeName || 'Monu Chai'} Location`}
-                        ></iframe>
+                    <div className={styles.mapContainer} style={{ borderRadius: '16px', overflow: 'hidden' }}>
+                        <a
+                            href="https://www.google.com/maps?q=28.6688978,77.4853185"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ display: 'block', width: '100%', height: '100%' }}
+                        >
+                            <iframe
+                                src="https://www.google.com/maps?q=28.6688978,77.4853185&z=17&output=embed"
+                                className={styles.mapFrame}
+                                style={{ border: 0, width: '100%', height: '100%' }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                title={`${settings?.storeName || 'Monu Chai'} Location`}
+                            ></iframe>
+                        </a>
                     </div>
+
+                    <a
+                        href="https://www.google.com/maps/dir/?api=1&destination=28.6688978,77.4853185"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.directionBtn}
+                    >
+                        Get Directions
+                    </a>
                 </motion.div>
 
                 {/* Bottom Section: Join the Tribe */}

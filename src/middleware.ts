@@ -14,7 +14,7 @@ export function middleware(request: NextRequest) {
     // We allow Cloudinary, Unsplash, and Avataaars images as per requests.
     response.headers.set(
         'Content-Security-Policy',
-        "default-src 'self'; img-src 'self' https://res.cloudinary.com https://images.unsplash.com https://plus.unsplash.com https://avataaars.io data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+        "default-src 'self'; img-src 'self' https://res.cloudinary.com https://images.unsplash.com https://plus.unsplash.com https://avataaars.io data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; frame-src 'self' https://www.google.com https://maps.google.com;"
     );
 
     return response;
